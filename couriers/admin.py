@@ -22,13 +22,13 @@ class TypeCourierAdmin(admin.ModelAdmin):
 class ClassificationAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
-
-
-
 @admin.register(Status)
 class StatusAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
+@admin.register(Attachment)
+class AttachmentAdmin(admin.ModelAdmin):
+    list_display = ("file",)
 ##############
 class AttachmentTabular(admin.TabularInline):
     model = Attachment

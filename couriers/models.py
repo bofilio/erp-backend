@@ -1,7 +1,7 @@
 from django.db import models
 from config.base import BaseModel
 
-# Entuty peut etre un expediteur ou un destinataire
+# Entuty model represente l'expéditeur en tant que structure ou une personne
 class Entity(BaseModel):
     name=models.CharField(max_length=255)
     email = models.CharField(max_length=255)
@@ -63,7 +63,7 @@ class Courier(BaseModel):
 
 class Attachment(BaseModel):
     file=models.FileField()
-    courier=models.ForeignKey(to=Courier, on_delete=models.CASCADE,related_name="files")
+    courier=models.ForeignKey(to=Courier, on_delete=models.CASCADE,related_name="attachments")
     def __str__(self):
         return self.file.name
 
