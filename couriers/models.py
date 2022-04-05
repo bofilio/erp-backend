@@ -64,6 +64,7 @@ class Courier(BaseModel):
 class Attachment(BaseModel):
     file=models.FileField()
     courier=models.ForeignKey(to=Courier, on_delete=models.CASCADE,related_name="attachments")
+    name=models.CharField(max_length=255, null=True)
     def __str__(self):
         return self.file.name
 

@@ -28,7 +28,7 @@ class StatusAdmin(admin.ModelAdmin):
 
 @admin.register(Attachment)
 class AttachmentAdmin(admin.ModelAdmin):
-    list_display = ("file",)
+    list_display = ("name","file",)
 ##############
 class AttachmentTabular(admin.TabularInline):
     model = Attachment
