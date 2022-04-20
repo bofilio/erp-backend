@@ -4,6 +4,9 @@ from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse
 
 from django.core.mail import send_mail
+import os
+from django.conf import settings
+media_root = settings.MEDIA_ROOT
 
 class Util:
     @staticmethod
@@ -19,6 +22,5 @@ class Util:
         )
         email.content_subtype = 'html'  # if the email body contains html tags, set this. Otherwise, omit it
         for file in attachments:
-            email.attach_file(file)
-
+            email.attach_file(os.path.join(media_root,file))
         email.send(fail_silently=False)

@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     # apps devloppées
-    "couriers",
+    'couriers',
+    'commun',
+    'grh',
 ]
 
 MIDDLEWARE = [
@@ -82,11 +84,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.BasicAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissions',
     ]
 }
 CORS_ALLOWED_ORIGINS = [
@@ -147,5 +150,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+
+#####################
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'messagerie.al-mouradia.dz' # double check the settings in your outlook mailbox to make sure the host name is correct
+EMAIL_PORT = 25  # double check the settings in your outlook mailbox and make sure the port number is correct
+EMAIL_HOST_USER = 'h.talha'  # don't include the @blah.com part! I have made this stupid mistakes before
+EMAIL_HOST_PASSWORD = 'Wxcvbn,;1993'
+#################
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
