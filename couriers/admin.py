@@ -12,10 +12,10 @@ admin.site.index_title = "Bienvenu à l'application Courier"
 
 
 
-@admin.register(Entity)
+@admin.register(Expediteur)
 class ExpediteurAdmin(admin.ModelAdmin):
-    list_display = ("name","email")
-    search_fields = ("name","email")
+    list_display = ("name","structure","employe")
+    search_fields = ("name",)
 
 @admin.register(TypeCourier)
 class TypeCourierAdmin(admin.ModelAdmin):

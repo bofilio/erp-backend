@@ -2,10 +2,19 @@ from django.db import models
 from config.base import BaseModel
 from grh.models import Structure,Employe
 # Entuty model represente l'expéditeur en tant que structure ou une personne
-class Entity(BaseModel):
-    name=models.CharField(max_length=255)
+class Expediteur(BaseModel):
+    name=models.CharField(max_length=255, editable=False, null=True)
     structure=models.OneToOneField(to=Structure, on_delete=models.PROTECT,null=True,blank=True)
     employe=models.OneToOneField(to=Employe,on_delete=models.PROTECT,null=True,blank=True)
+    def save(self, *args, **kwargs):
+        if self.structure==None and self.employe==None:
+            return
+        if self.structure!=None:
+            self.name=self.structure.lebel
+        else:
+            self.name= "{} {}".format(self.employe.nom, self.employe.prenom)
+        super().save(*args, **kwargs)
+
     def getExpediteur(self):
         if(self.structure):
             return self.structure
@@ -13,7 +22,9 @@ class Entity(BaseModel):
     class Meta:
         verbose_name="Expediteur"
     def __str__(self):
-        return self.name
+        if(self.structure):
+            return "{}".format(self.structure.lebel)
+        return "{} {}".format(self.employe.nom, self.employe.prenom)
 
 class TypeCourier(BaseModel):
     name = models.CharField(max_length=255)
@@ -54,9 +65,9 @@ class Courier(BaseModel):
     exige_reponse=models.BooleanField(default=False)
     instructions=models.TextField(null=True,blank=True)
     #relashinships
-    expediteur = models.ForeignKey(to=Entity, on_delete=models.PROTECT,related_name="courier_envoyes")
-    destinataires = models.ManyToManyField(Entity,related_name="couriers_recus")
-    visible_a = models.ManyToManyField(Entity, related_name="couriers_visibles", verbose_name="Visible à")
+    expediteur = models.ForeignKey(to=Expediteur, on_delete=models.PROTECT,related_name="courier_envoyes")
+    destinataires = models.ManyToManyField(Expediteur,related_name="couriers_recus")
+    visible_a = models.ManyToManyField(Expediteur, related_name="couriers_visibles", verbose_name="Visible à")
     type = models.ForeignKey(to=TypeCourier, on_delete=models.PROTECT)
     classification = models.ForeignKey(to=Classification, on_delete=models.PROTECT)
     reponse = models.ForeignKey(to="self", null=True, blank=True, on_delete=models.DO_NOTHING)

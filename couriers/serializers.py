@@ -3,7 +3,6 @@ from .models import *
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Attachment
         fields = "__all__"
@@ -23,8 +22,9 @@ class CourierSerializer(serializers.ModelSerializer):
             return expanded_fields
 
 class ExpediteurSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = Entity
+        model = Expediteur
         fields = "__all__"
 
 class ClassificationSerializer(serializers.ModelSerializer):

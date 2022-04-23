@@ -1,22 +1,12 @@
 from rest_framework import viewsets
-from .models import *
 from .serializers import *
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework import status
 
 class CouriesViewSet(viewsets.ModelViewSet):
     queryset = Courier.objects.all()
     serializer_class = CourierSerializer
 
-    @action(detail=False, methods=["post"])
-    def sendemail(self, request):
-        data=request.data
-        print(data)
-        return Response(1, status=status.HTTP_200_OK)
-
 class ExpediteurViewSet(viewsets.ModelViewSet):
-    queryset = Entity.objects.all()
+    queryset = Expediteur.objects.all()
     serializer_class = ExpediteurSerializer
 
 class ClassificationViewSet(viewsets.ModelViewSet):
