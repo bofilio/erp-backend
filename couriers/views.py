@@ -8,6 +8,12 @@ class CouriesViewSet(viewsets.ModelViewSet):
 class ExpediteurViewSet(viewsets.ModelViewSet):
     queryset = Expediteur.objects.all()
     serializer_class = ExpediteurSerializer
+    def list(self, request, *args, **kwargs):
+        ids_param=request.query_params.get('ids')
+        if ids_param:
+            ids=ids_param.split(",")
+            self.queryset=Expediteur.objects.filter(pk__in=ids)
+        return super().list(request, *args, **kwargs)
 
 class ClassificationViewSet(viewsets.ModelViewSet):
     queryset = Classification.objects.all()
@@ -30,7 +36,3 @@ class AttachmentViewSet(viewsets.ModelViewSet):
         if id_courier:
             self.queryset=Attachment.objects.filter(courier=id_courier)
         return super().list(request, *args, **kwargs)
-    # @action(detail=False, methods=['get'], url_path=r'by_courier/(?P<id_courier>[^/.]+)')
-    # def attchementByCourier(self, request,id_courier, *args, **kwargs):
-    #     self.queryset=Attachment.objects.filter(courier__id=id_courier)
-    #     return self.list(request,*args, **kwargs)

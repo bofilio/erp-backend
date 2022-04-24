@@ -10,15 +10,17 @@ from  commun.util import Util
 
 
 class EmailAPI(APIView):
-    #authentication_classes = [authentication.JWTAuthentication]
-    #permission_classes = [permissions.IsAdminUser]
-
+    authentication_classes = [authentication.JWTAuthentication]
+    permission_classes = [permissions.IsAdminUser]
     def post(self, request, format=None):
         data=request.data
-        print(data)
-
-        Util.send_email(subject=data["subject"], message=data["message"], source=data["source"], to=data["to"] or [], cc=[],
-                              attachments=data["attachments"])
+        print (data)
+        #try:
+        Util.send_email(subject=data["subject"], message=data["message"], source=data["source"], to=data["to"] or[], cc=[],
+        attachments=data["attachments"] or [])
         return Response(len(data["to"]))
+        #except:
+            #raise Exception({"details":"bad request"})
+
 
 

@@ -4,6 +4,7 @@ from grh.models import Structure,Employe
 # Entuty model represente l'expéditeur en tant que structure ou une personne
 class Expediteur(BaseModel):
     name=models.CharField(max_length=255, editable=False, null=True)
+    email=models.EmailField(null=True)
     structure=models.OneToOneField(to=Structure, on_delete=models.PROTECT,null=True,blank=True)
     employe=models.OneToOneField(to=Employe,on_delete=models.PROTECT,null=True,blank=True)
     def save(self, *args, **kwargs):
@@ -11,8 +12,10 @@ class Expediteur(BaseModel):
             return
         if self.structure!=None:
             self.name=self.structure.lebel
+            self.email=self.structure.email
         else:
             self.name= "{} {}".format(self.employe.nom, self.employe.prenom)
+            self.email = self.employe.email
         super().save(*args, **kwargs)
 
     def getExpediteur(self):
