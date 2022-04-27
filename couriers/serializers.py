@@ -13,6 +13,7 @@ class CourierSerializer(serializers.ModelSerializer):
         model = Courier
         fields = '__all__'
         extra_fields = ['attachments']
+        extra_kwargs = {'visible_a': {'allow_empty': True}}
 
     def get_field_names(self, declared_fields, info):
         expanded_fields = super(CourierSerializer, self).get_field_names(declared_fields, info)

@@ -70,7 +70,7 @@ class Courier(BaseModel):
     #relashinships
     expediteur = models.ForeignKey(to=Expediteur, on_delete=models.PROTECT,related_name="courier_envoyes")
     destinataires = models.ManyToManyField(Expediteur,related_name="couriers_recus")
-    visible_a = models.ManyToManyField(Expediteur, related_name="couriers_visibles", verbose_name="Visible à")
+    visible_a = models.ManyToManyField(Expediteur, related_name="couriers_visibles",null=True,blank=True, verbose_name="Visible à")
     type = models.ForeignKey(to=TypeCourier, on_delete=models.PROTECT)
     classification = models.ForeignKey(to=Classification, on_delete=models.PROTECT)
     reponse = models.ForeignKey(to="self", null=True, blank=True, on_delete=models.DO_NOTHING)
