@@ -22,6 +22,7 @@ class CourierSerializer(serializers.ModelSerializer):
         else:
             return expanded_fields
 
+
 class ExpediteurSerializer(serializers.ModelSerializer):
 
     class Meta:

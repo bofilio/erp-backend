@@ -75,11 +75,15 @@ class Courier(BaseModel):
     classification = models.ForeignKey(to=Classification, on_delete=models.PROTECT)
     reponse = models.ForeignKey(to="self", null=True, blank=True, on_delete=models.DO_NOTHING)
     status=models.ForeignKey(to=Status, on_delete=models.PROTECT, verbose_name="Traitement")
-    deleted=models.BooleanField(default=False,editable=False, verbose_name="Supprimé")
+    deleted=models.BooleanField(default=False, verbose_name="Supprimé")
+    structure=models.ForeignKey(to=Structure, on_delete=models.PROTECT, null=True)
 
 
     def __str__(self):
         return self.objet
+    def delete(self):
+        self.deleted=True
+        self.save()
 
 
 class Attachment(BaseModel):
