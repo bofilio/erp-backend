@@ -1,8 +1,12 @@
+import json
+
+from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.models import Permission
 from rest_framework import viewsets,filters
 from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
 from grh.models import Employe
-from django.db.models import Q
+from .models import *
 
 class CouriesViewSet(viewsets.ModelViewSet):
     queryset = Courier.objects.filter()
@@ -29,13 +33,15 @@ class CouriesViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         user=request.user
         empty_result=Courier.objects.none()
-        print("=====================user")
-        print(user)
         if not user:
             self.queryset= empty_result
+            return super().list(request, *args, **kwargs)
+
+        if not user.has_perm('couriers.view_courier'):
+            self.queryset = empty_result
+            raise Exception("401")
         try:
             employe=Employe.objects.get(user=user)
-            print(employe)
             self.queryset= Courier.objects.filter( structure=employe.structure,deleted=False)
         except:
             raise Exception("cet utilisateur n'a pas d'employe correspondant !")

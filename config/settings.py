@@ -15,6 +15,9 @@ import os
 from datetime import  timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 import rest_framework.permissions
+from django.contrib import admin
+
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,15 +44,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #extensions
-    'corsheaders',
-    'rest_framework',
-    'django_filters',
-    'djoser',
     # apps devloppées
     'couriers',
     'commun',
     'grh',
+    # extensions
+    'corsheaders',
+    'rest_framework',
+    'django_filters',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -81,6 +84,11 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 WSGI_APPLICATION = 'config.wsgi.application'
 
 REST_FRAMEWORK = {
@@ -102,6 +110,12 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME':timedelta(days=365),
     'AUTH_HEADER_TYPES': ('JWT','Token','Bareer'),
 }
+DJOSER = {
+    'SERIALIZERS': {
+        'user': 'grh.serializers.UserSerializer',
+        'current_user': 'grh.serializers.UserSerializer',
+    },
+}
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -112,6 +126,56 @@ DATABASES = {
     }
 }
 
+########## LDAP config
+import ldap
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType, LDAPSearchUnion
+
+AUTH_LDAP_SERVER_URI = "ldap://AVDC1.al-mouradia.dz:389"
+AUTH_LDAP_BIND_DN = 'CN=rfc,OU=Apps,OU=LAN,DC=AL-MOURADIA,DC=DZ'
+AUTH_LDAP_BIND_AS_AUTHENTICATING_USER = True
+AUTH_LDAP_BIND_PASSWORD = "123456"
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    "OU=LAN,DC=AL-MOURADIA,DC=DZ", ldap.SCOPE_SUBTREE, '(sAMAccountName=%(user)s)'
+)
+
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+}
+#
+AUTH_LDAP_GROUP_SEARCH =LDAPSearch(
+    "OU=ERP,OU=Apps,OU=LAN,DC=AL-MOURADIA,DC=DZ",
+    ldap.SCOPE_SUBTREE,
+    "(objectClass=group)",
+)
+
+
+AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr="cn")
+# any one should be in this groupe to be able to login
+AUTH_LDAP_REQUIRE_GROUP = "CN=is_active,OU=Common,OU=ERP,OU=Apps,OU=LAN,DC=AL-MOURADIA,DC=DZ"
+# this wwill auto populate Django_user fields from ldap groups
+#is_active  means the user is active or not
+#is_staff  means the user can log into the django admin interface or not
+# is_superuser means the user has all permissions
+AUTH_LDAP_USER_FLAGS_BY_GROUP = {
+    "is_active": "CN=is_active,OU=Common,OU=ERP,OU=Apps,OU=LAN,DC=AL-MOURADIA,DC=DZ",
+    "is_staff": "CN=is_staff,OU=Common,OU=ERP,OU=Apps,OU=LAN,DC=AL-MOURADIA,DC=DZ",
+    "is_superuser": "CN=is_superuser,OU=Common,OU=ERP,OU=Apps,OU=LAN,DC=AL-MOURADIA,DC=DZ",
+}
+# this will map LDAP groupes to django groupes ( not working yet !!)
+AUTH_LDAP_FIND_GROUP_PERMS=True
+AUTH_LDAP_MIRROR_GROUPS=True
+# this will minimise too much trafic to Ldap server (will cache for 1800 sec = 30 min)
+#AUTH_LDAP_CACHE_TIMEOUT = 1800
+
+#
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"django_auth_ldap": {"level": "DEBUG", "handlers": ["console"]}},
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -163,6 +227,5 @@ EMAIL_PORT = 25  # double check the settings in your outlook mailbox and make su
 EMAIL_HOST_USER = 'h.talha'  # don't include the @blah.com part! I have made this stupid mistakes before
 EMAIL_HOST_PASSWORD = 'Wxcvbn,;1993'
 #################
-
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

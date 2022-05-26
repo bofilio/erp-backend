@@ -6,9 +6,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 media_root = settings.MEDIA_ROOT
-admin.site.site_header = "Application Courier"
-admin.site.site_title = "Courier"
-admin.site.index_title = "Bienvenu à l'application Courier"
+admin.site.site_header = "Administration ERP"
+admin.site.site_title = "ERP"
+admin.site.index_title = "Bienvenu à l'ERP"
 
 
 
